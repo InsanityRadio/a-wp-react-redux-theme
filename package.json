@@ -25,7 +25,9 @@
     "css-loader": "^0.28",
     "cssnano": "^3.10",
     "extract-text-webpack-plugin": "^3.0",
+    "font-awesome": "^4.7.0",
     "history": "^4.6",
+    "howler": "^2.0.7",
     "node-sass": "^4.7",
     "postcss-cssnext": "^3.0",
     "postcss-import": "^11.0",
@@ -36,6 +38,7 @@
     "react-redux": "^5.0",
     "react-router": "^4.2",
     "react-router-dom": "^4.2",
+    "react-timecode": "^0.1.2",
     "redux": "^3.7",
     "redux-logger": "^3.0",
     "redux-promise-middleware": "^5.0",
@@ -43,5 +46,10 @@
     "sass-loader": "^6.0",
     "style-loader": "^0.19",
     "webpack": "^3.10"
+  },
+  "devDependencies": {
+    "file-loader": "^1.1.6",
+    "font-awesome-sass-loader": "^2.0.1",
+    "url-loader": "^0.6.2"
   }
 }
