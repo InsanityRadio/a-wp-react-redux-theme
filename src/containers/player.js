@@ -19,18 +19,20 @@ class Player extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        if (nextProps.path != this.props.path) {
+        if (nextProps.path != this.state.path) {
             this.loadSound(nextProps.path);
         }
     }
 
-    loadSound (audio) {
+    loadSound (audio, title, force) {
 
         this.sound && this.sound.unload()
+        this.setState({ buffering: true, playing: false, path: audio, ...title && { title: title } })
+
         this.sound = new Howl({
             html5: true,
             src: audio,
-            autoplay: this.state.playing,
+            autoplay: force || this.state.playing,
             onplay: this.soundStateChange.bind(this, 'play'),
             onpause: this.soundStateChange.bind(this, 'pause'),
             onstop: this.soundStateChange.bind(this, 'stop'),
@@ -38,7 +40,6 @@ class Player extends Component {
             onseek: this.soundStateChange.bind(this)
         });
 
-        this.setState({ buffering: true, playing: false })
 
     }
 
@@ -53,8 +54,6 @@ class Player extends Component {
             this.setState({ seek: 0, duration: 0.1})
             return;
         }
-
-        console.log(this.sound, '!?')
 
         this.setState({ seek: this.sound.seek(), duration: this.sound.duration() || 0.1 })
         if (this.state.playing) {
@@ -88,8 +87,8 @@ class Player extends Component {
     clickPlay () {
 
         if (!this.sound) {
-            if (this.props.path) {
-                this.setState({ playing: true }, (a) => this.loadSound(this.props.path))
+            if (this.state.path) {
+                this.setState({ playing: true }, (a) => this.loadSound(this.state.path))
             }
             return;
         }

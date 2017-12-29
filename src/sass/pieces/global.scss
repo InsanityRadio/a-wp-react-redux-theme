@@ -41,7 +41,7 @@ html {
 	line-height: initial;
 }
 
-.controls button.control {
+button.control {
 	background: #FFF;
 	border: none;
 	border-radius: 100%;
@@ -53,25 +53,25 @@ html {
 	margin: 10px 0 0 10px;
 }
 
-.controls button.control i {
+button.control i {
 	font-size: 14pt;
 }
 
-.controls button.control i.fa-play {
+button.control i.fa-play {
 	position: relative;
 	left: 2px;
 }
 
-.controls button.control i.fa-video-camera {
+button.control i.fa-video-camera {
 	position: relative;
 	left: 1px;
 }
 
-.controls button.control:hover {
+button.control:hover {
 	opacity: 1;
 }
 
-.controls button.control:active {
+button.control:active {
 	background-color: #CCC;
 }
 
@@ -181,4 +181,14 @@ input[type=range]:focus::-ms-fill-upper {
 
 .seek input[type=range] {
 	margin: 0 10px;
+}
+
+.controls.post-controls {
+	float: left;
+	width: 55px;
+}
+
+.controls.post-controls button.control {
+	background: #DDD;
+	margin: 10px 0;
 }

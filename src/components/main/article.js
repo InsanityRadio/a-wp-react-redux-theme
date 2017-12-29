@@ -18,6 +18,10 @@ export default class Article extends Component {
 		}
 	}
 
+	getFeaturedAudioSrc () {
+		return this.props.post.featured_audio_url;
+	}
+
 	getCategories(cat_ids) {
 		if ('undefined' !== typeof cat_ids) {
 			return cat_ids.map(cat_id => {
@@ -32,15 +36,28 @@ export default class Article extends Component {
 		return (isSingle) ? post.content.rendered : post.excerpt.rendered;
 	}
 
+	onClickAudio (src) {
+		window.PLAYER.loadSound(src, this.props.post.title.rendered, true);
+	}
+
 	render() {
 		const post = this.props.post;
 		return (
 			<article className={this.getClasses()}>
-				<img src={this.getFeaturedImageSrc()} className="card-img-top img-fluid"/>
+				{ this.getFeaturedImageSrc() && (
+					<img src={this.getFeaturedImageSrc()} className="card-img-top img-fluid"/>
+				) }
 				<div className="card-block">
 					<Title link={post.link} isSingle={this.props.isSingle}>
 						{post.title.rendered}
 					</Title>
+					{ this.getFeaturedAudioSrc() && (
+						<div className="controls post-controls">
+							<button className='control' onClick={ (a) => this.onClickAudio(this.getFeaturedAudioSrc()) }>
+					    		<i className='fa fa-play'></i>
+					    	</button>
+					    </div>
+					) }
 					<Meta categories={this.getCategories(post.categories)}
 					      date={post.date}
 					      formattedDate={post.formatted_date}

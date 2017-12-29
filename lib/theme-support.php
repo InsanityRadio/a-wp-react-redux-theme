@@ -23,6 +23,7 @@ if ( ! class_exists( 'Theme_Support' ) ) :
 			add_filter( 'nav_menu_css_class', [ $this, 'bootstrap_menu_classes' ], 1, 3 );
 			add_filter( 'nav_menu_link_attributes', [ $this, 'bootstrap_menu_link_classes' ], 10, 3 );
 			add_action( 'get_search_form', [ $this, 'alt_search_form' ] );
+			add_theme_support( 'featured-audio' );
 		}
 
 		function bootstrap_menu_classes( $classes, $item, $args ) {

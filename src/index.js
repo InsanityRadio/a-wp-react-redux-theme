@@ -54,7 +54,7 @@ ReactDom.render(
 				</Switch>
 			</ConnectedRouter>
 		</Provider>
-		<Player path="https://cdn.index.hm/f/pgkX0WM4YWE4MGMyMmVlN/Insanity+2000s.mp3" />
+		<Player ref={ (a) => window.PLAYER = a } />
 	</div>,
 	document.getElementById('react-main')
 );
