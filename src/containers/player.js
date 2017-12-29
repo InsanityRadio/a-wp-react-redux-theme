@@ -4,6 +4,94 @@ import {Howl} from 'howler';
 import {fetchPost} from '../actions/index';
 import Timecode from 'react-timecode';
 
+class Audition {
+
+    stateChangeListeners = [];
+    presentationDelay = 0;
+    audio = null;
+    played = false;
+
+    constructor (options) {
+
+        this.options = options;
+        this.audio = null;
+
+        var webkit = 'WebkitAppearance' in document.documentElement.style;
+        var gecko = 'MozAppearance' in document.documentElement.style;
+
+        this.presentationDelay = webkit ? 10000 : (gecko ? 3000 : 5000);
+
+        let path = this.options.src;
+        this.audio = new Audio(path);
+        this.audio.addEventListener("playing", (e) => this.handleStateChange(e));
+        this.audio.addEventListener("pause", (e) => this.handleStateChange(e));
+        this.audio.addEventListener("stalled", (e) => this.handleStateChange(e));
+        this.audio.addEventListener("seeking", (e) => this.handleStateChange(e));
+        this.audio.addEventListener("seeked", (e) => this.handleStateChange(e));
+
+        this.audio.style.display = 'none';
+        document.body.appendChild(this.audio);
+
+        this.options.autoplay && this.play();
+
+    }
+
+    play () {
+        this.played = false;
+        this.audio.play();
+    }
+
+    pause () {
+        this.audio.pause();
+    }
+
+    stop () {
+        this.audio.pause();
+        this.audio.parentNode && this.audio.parentNode.removeChild(this.audio);
+        this.audio = null;
+    }
+
+    get loaded () {
+        return this.audio != null;
+    }
+
+    get playing() {
+        return this.audio != null && this.audio.duration > 0 && !this.audio.paused;
+    }
+
+    get buffering() {
+        return this.audio != null && (!this.played || this.audio.readyState < this.audio.HAVE_FUTURE_DATA);
+    }
+
+    get seek () {
+        return this.audio.currentTime;
+    }
+
+    get duration () {
+        return this.audio.duration;
+    }
+
+    seekTo (seek) {
+        this.audio.currentTime = seek;
+    }
+
+    stateChange (handler) {
+        this.stateChangeListeners.push(handler);
+    }
+
+    handleStateChange(e) {
+        if(this.playing)
+            this.played = true;
+
+        this.stateChangeListeners.forEach((a, _) => a(this, e));
+    }
+
+    toggle () {
+        this.playing ? this.pause() : this.play();
+    }
+
+}
+
 class Player extends Component {
 
     state = {
@@ -15,7 +103,6 @@ class Player extends Component {
     }
     
     componentWillMount() {
-//        this.props.fetchPost(this.props.location.pathname);
     }
 
     componentWillReceiveProps (nextProps) {
@@ -26,25 +113,27 @@ class Player extends Component {
 
     loadSound (audio, title, force) {
 
-        this.sound && this.sound.unload()
+        if (this.sound) {
+            this.sound.stop();
+        }
         this.setState({ buffering: true, playing: false, path: audio, ...title && { title: title } })
 
-        this.sound = new Howl({
-            html5: true,
-            src: audio,
+        this.sound = new Audition({
+            src: [audio],
             autoplay: force || this.state.playing,
             onplay: this.soundStateChange.bind(this, 'play'),
             onpause: this.soundStateChange.bind(this, 'pause'),
             onstop: this.soundStateChange.bind(this, 'stop'),
             onend: this.soundStateChange.bind(this, 'end'),
-            onseek: this.soundStateChange.bind(this)
         });
+
+        this.sound.stateChange((sound) => this.soundStateChange())
 
 
     }
 
     stopSound () {
-        this.sound.unload();
+        this.sound.stop();
         this.setState({ buffering: false, playing: false })
     }
 
@@ -55,7 +144,7 @@ class Player extends Component {
             return;
         }
 
-        this.setState({ seek: this.sound.seek(), duration: this.sound.duration() || 0.1 })
+        this.setState({ seek: this.sound.seek, duration: this.sound.duration || 0.1 })
         if (this.state.playing) {
             clearTimeout(this._int);
             this._int = setTimeout(this.soundSeekChange.bind(this), 300);
@@ -65,23 +154,31 @@ class Player extends Component {
 
     seek (time) {
         this.setState({ seek: time })
-        this.sound && this.sound.seek(time)
+        if (this.sound) {
+            this.sound.seekTo(time)
+        }
     }
 
     soundStateChange (event) {
-        if (this.sound.state() == "loading") {
+        if (this.sound.buffering) {
             this.setState({ buffering: true })
             this.setSeekEnabled(false)
             return;
         }
-        if (this.sound.state() != "loaded" || event == 'end') {
+        if (!this.sound.loaded) {
             this.setState({ buffering: false, playing: false })
             this.setSeekEnabled(false)
             return;
         }
-        this.setState({ playing: this.sound.playing(), buffering: false }, (a) => {
+        console.log('State change', this.sound.playing, this.sound)
+
+        this.setSeekEnabled(true)
+        this.setState({ playing: this.sound.playing, buffering: false }, (a) => {
             this.soundSeekChange()
         })
+    }
+
+    setSeekEnabled (enabled) {
     }
 
     clickPlay () {
@@ -96,6 +193,7 @@ class Player extends Component {
         if (this.state.playing) {
             this.sound.pause()
         } else {
+            this.sound.pause()
             this.sound.play()
         }
     }
@@ -123,7 +221,7 @@ class Player extends Component {
                         <b><Timecode time={ this.state.seek * 1000 } /></b>
                         <input
                             type="range"
-                            onkeydown={ (a) => false }
+                            onKeyDown={ (a) => false }
                             min="0"
                             max={ this.state.duration }
                             step="0.05"

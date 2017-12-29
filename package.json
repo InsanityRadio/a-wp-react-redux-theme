@@ -20,6 +20,7 @@
     "babel-preset-minify": "^0.2",
     "babel-preset-react": "^6.24",
     "babel-preset-stage-2": "^6.24",
+    "buzz": "^1.2.0",
     "caniuse-lite": "^1.0",
     "connected-react-router": "^4.3",
     "css-loader": "^0.28",
