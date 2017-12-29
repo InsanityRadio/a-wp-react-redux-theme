@@ -97,7 +97,7 @@ class Player extends Component {
     state = {
         playing: false,
         buffering: false,
-        title: "Test Info",
+        title: "",
         seek: 0,
         duration: 0.1
     }
