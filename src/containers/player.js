@@ -111,6 +111,10 @@ class Player extends Component {
         }
     }
 
+    componentWillUpdate (newProps, newState) {
+        this.handleStateChange(newState);
+    }
+
     loadSound (audio, title, force) {
 
         if (this.sound) {
@@ -170,7 +174,6 @@ class Player extends Component {
             this.setSeekEnabled(false)
             return;
         }
-        console.log('State change', this.sound.playing, this.sound)
 
         this.setSeekEnabled(true)
         this.setState({ playing: this.sound.playing, buffering: false }, (a) => {
@@ -241,6 +244,22 @@ class Player extends Component {
         );
 
     }
+
+    stateChangeListeners = []
+
+    registerInline (handler) {
+        this.stateChangeListeners.push(handler);
+    }
+
+    deregisterInline (handler) {
+        let index = this.stateChangeListeners.indexOf(handler)
+        index > -1 && this.stateChangeListeners.splice(index, 1);
+    }
+
+    handleStateChange(e) {
+        this.stateChangeListeners.forEach((a, _) => a.handleStateChange(this, e));
+    }
+
 
 }
 

@@ -1,0 +1,56 @@
+body {
+	background: #FFF;
+	font-family: "Arial", sans-serif;
+	font-size: 10pt;
+}
+
+body > div > div > .container-fluid {
+	background: #FFF;
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+header.navbar {
+	background: #ff854e;
+	margin-bottom: 10px;
+}
+
+header a h1 {
+	font-size: 16pt;
+	font-weight: bold;
+	color: #0000c4;
+}
+
+.meta .cats a {
+	color: #0000c4;
+}
+
+.footer {
+	background-color: #cac4bd;
+}
+
+.web-player .container {
+	color: #000;
+}
+
+.card {
+	border-radius: 0;
+}
+
+.card-columns {
+	column-count: 2;
+}
+
+input[type=range]::-webkit-slider-thumb {
+}
+
+input[type=range]::-moz-range-thumb {
+	background: #cac4bd;
+	box-shadow: none;
+	border: none;
+	outline: 2px outset #FFF;
+}
+
+input[type=range]::-ms-thumb {
+	
+}

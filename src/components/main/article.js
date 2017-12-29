@@ -5,6 +5,8 @@ import Content from '../../containers/parts/content';
 import Meta from './article/meta';
 import PostFooter from '../../containers/parts/post-footer';
 
+import InlinePlayer from '../../containers/inlineplayer';
+
 export default class Article extends Component {
 	getClasses() {
 		return this.props.isSingle ? 'card single w-75' : 'card archive';
@@ -36,10 +38,6 @@ export default class Article extends Component {
 		return (isSingle) ? post.content.rendered : post.excerpt.rendered;
 	}
 
-	onClickAudio (src) {
-		window.PLAYER.loadSound(src, this.props.post.title.rendered, true);
-	}
-
 	render() {
 		const post = this.props.post;
 		return (
@@ -52,11 +50,8 @@ export default class Article extends Component {
 						{post.title.rendered}
 					</Title>
 					{ this.getFeaturedAudioSrc() && (
-						<div className="controls post-controls">
-							<button className='control' onClick={ (a) => this.onClickAudio(this.getFeaturedAudioSrc()) }>
-					    		<i className='fa fa-play'></i>
-					    	</button>
-					    </div>
+						<InlinePlayer path={ this.getFeaturedAudioSrc() }
+									  title={ post.title.rendered } />
 					) }
 					<Meta categories={this.getCategories(post.categories)}
 					      date={post.date}
