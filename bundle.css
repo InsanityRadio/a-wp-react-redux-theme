@@ -2541,6 +2541,9 @@ input[type=range]:focus::-ms-fill-upper {
   background: #DDD;
   margin: 10px 0; }
 
+body > div > div > .container-fluid {
+  margin-bottom: 80px; }
+
 /* @import "themes/00s"; */
 .commentBox {
   padding: 1em; }
