@@ -17,11 +17,20 @@ class Menu extends Component {
             return menu.items.map(item => {
                 return (
                     <li key={item.ID} className="nav-item">
-                        <Link className="nav-link" to={Menu.getRelativeUrl(item.url)}>{item.title}</Link>
+                        { Menu.renderLink (item.url, item.title) }
                     </li>
                 );
             });
         }
+    }
+
+    static renderLink (url, title) {
+        let isInternal = url.substr(0, window.location.origin.length) == window.location.origin;
+        return isInternal ? (
+            <Link className="nav-link" to={Menu.getRelativeUrl(url)}>{title}</Link>
+        ) : (
+            <a className="nav-link" href={url}>{title}</a>
+        )
     }
 
     static getRelativeUrl(url) {
